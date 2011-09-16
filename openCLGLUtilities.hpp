@@ -20,6 +20,6 @@
 
 
 
-cl::Context createCLGLContext(cl_device_type type, cl_vendor vendor = VENDOR_ANY);
+cl::Context createCLGLContext(cl_device_type type = CL_DEVICE_TYPE_ALL, cl_vendor vendor = VENDOR_ANY);
 
 #endif
