@@ -9,12 +9,6 @@
     #include <OpenCL/cl.hpp>
 #else
     #include <CL/cl.hpp>
-    #ifdef _WIN32
-    #else
-    #ifdef __gl_h
-        #include <GL/glx.h>
-    #endif
-#endif
 #endif
 
 
