@@ -8,6 +8,7 @@
 #endif
         
 #include "openCLUtilities.hpp"
+#include <CL/cl_gl.h>
 
 #if defined(__APPLE__) || defined(__MACOSX)
 #include <OpenGL/OpenGL.h>
@@ -18,8 +19,7 @@
 #endif 
 #endif
 
-
-
 cl::Context createCLGLContext(cl_device_type type = CL_DEVICE_TYPE_ALL, cl_vendor vendor = VENDOR_ANY);
+cl::Device getValidGLCLInteropDevice(cl::Platform platform, cl_context_properties* properties);
 
 #endif
