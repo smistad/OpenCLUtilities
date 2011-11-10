@@ -41,10 +41,57 @@ cl::Context createCLGLContext(cl_device_type type, cl_vendor vendor) {
 #endif
 
     try {
-        cl::Context context = cl::Context(type, cps);
+
+		// We need to check if there is more than one device first
+		cl::vector<cl::Device> devices;
+		cl::vector<cl::Device> singleDevice;
+		platform.getDevices(type, &devices);
+		cl::Context context;
+
+		// If more than one CL device find out which one is associated with GL context
+		if(devices.size() > 1) {
+			cl::Device interopDevice = getValidGLCLInteropDevice(platform, cps);
+			singleDevice.push_back(interopDevice);
+			context = cl::Context(singleDevice, cps);
+		} else {
+			context = cl::Context(type, cps);
+		}
 
         return context;
     } catch(cl::Error error) {
-        throw cl::Error(1, "Failed to create an OpenCL context!");
+        throw error;
     }
+}
+
+
+cl::Device getValidGLCLInteropDevice(cl::Platform platform, cl_context_properties* properties) {
+    // Function for finding a valid device for CL-GL context. 
+    // Thanks to Jim Vaughn for this contribution
+	cl::Device displayDevice;
+	
+	cl_device_id interopDeviceId;
+
+	int status;
+	size_t deviceSize = 0;
+
+	// Load extension function call
+	clGetGLContextInfoKHR_fn glGetGLContextInfo_func = (clGetGLContextInfoKHR_fn)clGetExtensionFunctionAddress("clGetGLContextInfoKHR");
+
+	// Ask for the CL device associated with the GL context
+	status = glGetGLContextInfo_func( properties, 
+									  CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR,
+									  sizeof(cl_device_id), 
+									  &interopDeviceId, 
+									  &deviceSize);
+	
+	if(deviceSize == 0) {
+        throw cl::Error(1,"No GLGL devices found for current platform");
+	}
+
+	if(status != CL_SUCCESS)
+	{
+		throw cl::Error(1, "Could not get CLGL interop device for the current platform. Failure occured during call to clGetGLContextInfoKHR.");
+	}
+
+	return cl::Device(interopDeviceId);
 }
