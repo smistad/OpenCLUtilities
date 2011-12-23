@@ -79,17 +79,16 @@ cl::Device getValidGLCLInteropDevice(cl::Platform platform, cl_context_propertie
 
 	// Ask for the CL device associated with the GL context
 	status = glGetGLContextInfo_func( properties, 
-									  CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR,
-									  sizeof(cl_device_id), 
-									  &interopDeviceId, 
-									  &deviceSize);
+                                    CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR,
+                                    sizeof(cl_device_id), 
+                                    &interopDeviceId, 
+                                    &deviceSize);
 	
 	if(deviceSize == 0) {
         throw cl::Error(1,"No GLGL devices found for current platform");
 	}
 
-	if(status != CL_SUCCESS)
-	{
+	if(status != CL_SUCCESS) {
 		throw cl::Error(1, "Could not get CLGL interop device for the current platform. Failure occured during call to clGetGLContextInfoKHR.");
 	}
 

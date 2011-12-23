@@ -58,6 +58,33 @@ cl::Platform getPlatform(cl_device_type type, cl_vendor vendor) {
     return platform;
 }
 
+cl::Context createCLContextFromArguments(int argc, char ** argv) {
+    cl_device_type type = CL_DEVICE_TYPE_ALL;
+    cl_vendor vendor = VENDOR_ANY;
+
+    for(int i = 0; i < argc; i++) {
+        if(strcmp(argv[i], "--device") == 0) {
+            if(strcmp(argv[i+1], "cpu") == 0) {
+                type = CL_DEVICE_TYPE_CPU;
+            } else if(strcmp(argv[i+1], "gpu") == 0) {
+                type = CL_DEVICE_TYPE_GPU;
+            }
+            i++;
+        } else if(strcmp(argv[i], "--vendor") == 0) {
+            if(strcmp(argv[i+1], "amd") == 0) {
+                vendor = VENDOR_AMD;
+            } else if(strcmp(argv[i+1], "intel") == 0) {
+                vendor = VENDOR_INTEL;
+            } else if(strcmp(argv[i+1], "nvidia") == 0) {
+                vendor = VENDOR_NVIDIA;
+            }
+            i++;
+        }
+    }
+
+    return createCLContext(type, vendor);
+}
+
 cl::Context createCLContext(cl_device_type type, cl_vendor vendor) {
 
     cl::Platform platform = getPlatform(type, vendor);
