@@ -25,22 +25,12 @@ ELSE (WIN32)
     #SET(OPENCL_INCLUDE_DIR  "$ENV{OPENCL_HOME}/common/inc"
     #   CACHE PATH "path to Opencl Include files")
 
-    #message(***** OPENCL_INCLUDE_DIR: "${OPENCL_INCLUDE_DIR}" ********)
-
-	# does not work. WHY? 
-    #SET(inc  $ENV{CUDA_LOCAL}/../OpenCL/common/inc /usr/include)
+    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.hpp PATHS /usr/local/cuda/include )
     FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.hpp PATHS $ENV{AMDAPPSDKROOT}/include )
 
-    message("lib path: $ENV{LD_LIBRARY_PATH}")
-    #FIND_LIBRARY(OPENCL_LIBRARIES OpenCL $ENV{LD_LIBRARY_PATH})
+    FIND_LIBRARY(OPENCL_LIBRARIES OpenCL /usr/local/cuda/lib)
     FIND_LIBRARY(OPENCL_LIBRARIES OpenCL $ENV{AMDAPPSDKROOT}/lib/x86_64)
-    message("==============")
     message("opencl_libraries: ${OPENCL_LIBRARIES}")
-
-    #message(***** OPENCL ENV: "$ENV{GPU_SDK}" ********)
-
-#~/NVIDIA_GPU_Computing_SDK/OpenCL/common/inc/ 
-
 
 ENDIF (WIN32)
 
