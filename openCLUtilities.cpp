@@ -1,5 +1,11 @@
 #include "openCLUtilities.hpp"
 
+#ifdef WIN32
+#else
+#include <sys/stat.h>
+#include <time.h>
+#endif
+
 cl::Platform getPlatform(cl_device_type type, cl_vendor vendor) {
     // Get available platforms
     cl::vector<cl::Platform> platforms;
@@ -103,6 +109,109 @@ cl::Context createCLContext(cl_device_type type, cl_vendor vendor) {
     } catch(cl::Error error) {
         throw cl::Error(1, "Failed to create an OpenCL context!");
     }
+}
+
+cl::Program writeBinary(cl::Context context, std::string filename) {
+    // Build program from source file and store the binary file
+    cl::Program program = buildProgramFromSource(context, filename);
+
+    cl::vector<std::size_t> binarySizes;
+    binarySizes = program.getInfo<CL_PROGRAM_BINARY_SIZES>();
+
+    cl::vector<char *> binaries;
+    binaries = program.getInfo<CL_PROGRAM_BINARIES>();
+
+    std::string binaryFilename = filename + ".bin";
+    FILE * file = fopen(binaryFilename.c_str(), "wb");
+    if(!file)
+        printf("could not write to file\n");
+    fwrite(binaries[0], sizeof(char), (int)binarySizes[0], file);
+    fclose(file);
+
+    // Write cache file
+    std::string cacheFilename = filename + ".cache";
+    FILE * cacheFile = fopen(cacheFilename.c_str(), "w");
+    std::string timeStr;
+    #ifdef WIN32
+    #else
+    struct stat attrib; // create a file attribute structure
+    stat(filename.c_str(), &attrib);
+    timeStr = ctime(&(attrib.st_mtime));
+    #endif
+    cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+    timeStr += "-" + devices[0].getInfo<CL_DEVICE_NAME>();
+    fwrite(timeStr.c_str(), sizeof(char), timeStr.size(), cacheFile);
+    fclose(cacheFile);
+
+    return program;
+}
+
+cl::Program readBinary(cl::Context context, std::string filename) {
+    std::ifstream sourceFile(filename.c_str(), std::ios_base::binary | std::ios_base::in);
+    std::string sourceCode(
+        std::istreambuf_iterator<char>(sourceFile),
+        (std::istreambuf_iterator<char>()));
+    cl::Program::Binaries binary(1, std::make_pair(sourceCode.c_str(), sourceCode.length()+1));
+
+    cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+    if(devices.size() > 1) {
+        // Currently only support compiling for one device
+        cl::Device device = devices[0];
+        devices.clear();
+        devices.push_back(device);
+    }
+
+    cl::Program program = cl::Program(context, devices, binary);
+
+    // Build program for these specific devices
+    program.build(devices);
+    return program;
+}
+
+cl::Program buildProgramFromBinary(cl::Context context, std::string filename) {
+    cl::Program program;
+    std::string binaryFilename = filename + ".bin";
+
+    // Check if a binary file exists
+    std::ifstream binaryFile(binaryFilename.c_str(), std::ios_base::binary | std::ios_base::in);
+    if(binaryFile.fail()) {
+        program = writeBinary(context, filename);
+    } else {
+        // Compare modified dates of binary file and source file
+        std::string cacheFilename = filename + ".cache";
+
+        // Read cache file
+        std::ifstream cacheFile(cacheFilename.c_str());
+        std::string cache(
+            std::istreambuf_iterator<char>(cacheFile),
+            (std::istreambuf_iterator<char>()));
+
+        bool outOfDate = true;
+        bool wrongDeviceID = true;
+        int pos = cache.find("-");
+        if(pos > -1) {
+            #ifdef WIN32
+            std::cout << "reading file modified date on windows not implemented yet" << std::endl;
+            #else
+            struct stat attrib; // create a file attribute structure
+            stat(filename.c_str(), &attrib);
+            outOfDate = strcmp(ctime(&(attrib.st_mtime)), cache.substr(0, pos).c_str()) != 0;
+            #endif
+
+            cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+            wrongDeviceID = cache.substr(pos+1) != devices[0].getInfo<CL_DEVICE_NAME>();
+        }
+
+        if(outOfDate || wrongDeviceID) {
+            std::cout << "out of date" << std::endl;
+            program = writeBinary(context, filename);
+        } else {
+            std::cout << "not out of date" << std::endl;
+            program = readBinary(context, binaryFilename);
+        }
+    }
+
+    return program;
 }
 
 cl::Program buildProgramFromSource(cl::Context context, std::string filename) {
