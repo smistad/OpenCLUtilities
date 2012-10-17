@@ -9,26 +9,19 @@
 
 IF (WIN32)
 
-    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.h )
-
-    # TODO this is only a hack assuming the 64 bit library will
-    # not be found on 32 bit system
-    FIND_LIBRARY(OPENCL_LIBRARIES opencl ) #used to say opencl64
-    IF( OPENCL_LIBRARIES )
-        FIND_LIBRARY(OPENCL_LIBRARIES opencl ) #used to say opencl32
-    ENDIF( OPENCL_LIBRARIES )
+    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.h PATHS "C:/Program Files (x86)/AMD APP/include")
+    # Assuming 32 bit here
+    FIND_LIBRARY(OPENCL_LIBRARIES OpenCL "C:/Program Files (x86)/AMD APP/lib/x86")
 
 ELSE (WIN32)
 
     # Unix style platforms
-    # We also search for OpenCL in the NVIDIA GPU SDK default location
-    #SET(OPENCL_INCLUDE_DIR  "$ENV{OPENCL_HOME}/common/inc"
-    #   CACHE PATH "path to Opencl Include files")
 
-    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.hpp PATHS /usr/local/cuda/include )
-    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.hpp PATHS $ENV{AMDAPPSDKROOT}/include )
+    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.h PATHS /usr/local/cuda/include )
+    FIND_PATH(OPENCL_INCLUDE_DIR CL/cl.h PATHS $ENV{AMDAPPSDKROOT}/include )
 
     FIND_LIBRARY(OPENCL_LIBRARIES OpenCL /usr/local/cuda/lib)
+    # Assuming 64 bit here
     FIND_LIBRARY(OPENCL_LIBRARIES OpenCL $ENV{AMDAPPSDKROOT}/lib/x86_64)
     message("opencl_libraries: ${OPENCL_LIBRARIES}")
 
