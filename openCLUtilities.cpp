@@ -151,7 +151,7 @@ cl::Program readBinary(cl::Context context, std::string filename) {
     std::string sourceCode(
         std::istreambuf_iterator<char>(sourceFile),
         (std::istreambuf_iterator<char>()));
-    cl::Program::Binaries binary(1, std::make_pair(sourceCode.c_str(), sourceCode.length()+1));
+    cl::Program::Binaries binary(1, std::make_pair(sourceCode.c_str(), sourceCode.length()));
 
     cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
     if(devices.size() > 1) {
@@ -203,10 +203,10 @@ cl::Program buildProgramFromBinary(cl::Context context, std::string filename) {
         }
 
         if(outOfDate || wrongDeviceID) {
-            std::cout << "out of date" << std::endl;
+            std::cout << "Binary is out of date. Compiling..." << std::endl;
             program = writeBinary(context, filename);
         } else {
-            std::cout << "not out of date" << std::endl;
+            std::cout << "Binary is not out of date. " << std::endl;
             program = readBinary(context, binaryFilename);
         }
     }
