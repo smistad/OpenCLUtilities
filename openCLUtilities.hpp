@@ -32,6 +32,8 @@ cl::Platform getPlatform(cl_device_type = CL_DEVICE_TYPE_ALL, cl_vendor vendor =
 
 cl::Program buildProgramFromSource(cl::Context context, std::string filename);
 
+cl::Program buildProgramFromBinary(cl::Context context, std::string filename);
+
 char *getCLErrorString(cl_int err);
 
 #endif
