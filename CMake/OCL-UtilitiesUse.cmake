@@ -9,6 +9,6 @@ find_package(OpenCL REQUIRED)
 #------------------------------------------------------------------------------
 # Where to look for includes and libraries
 #------------------------------------------------------------------------------
-include_directories( ${OCL-Utilities_INCLUDE_DIRS} ${OpenCL_INCLUDE_DIRS})
+include_directories( ${OCL-Utilities_INCLUDE_DIRS} ${OPENCL_INCLUDE_DIR})
 link_directories (${OCL-Utilities_LIBRARY_DIRS})
 
