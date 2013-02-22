@@ -111,9 +111,9 @@ cl::Context createCLContext(cl_device_type type, cl_vendor vendor) {
     }
 }
 
-cl::Program writeBinary(cl::Context context, std::string filename) {
+cl::Program writeBinary(cl::Context context, std::string filename, std::string buildOptions) {
     // Build program from source file and store the binary file
-    cl::Program program = buildProgramFromSource(context, filename);
+    cl::Program program = buildProgramFromSource(context, filename, buildOptions);
 
     cl::vector<std::size_t> binarySizes;
     binarySizes = program.getInfo<CL_PROGRAM_BINARY_SIZES>();
@@ -168,14 +168,14 @@ cl::Program readBinary(cl::Context context, std::string filename) {
     return program;
 }
 
-cl::Program buildProgramFromBinary(cl::Context context, std::string filename) {
+cl::Program buildProgramFromBinary(cl::Context context, std::string filename, std::string buildOptions) {
     cl::Program program;
     std::string binaryFilename = filename + ".bin";
 
     // Check if a binary file exists
     std::ifstream binaryFile(binaryFilename.c_str(), std::ios_base::binary | std::ios_base::in);
     if(binaryFile.fail()) {
-        program = writeBinary(context, filename);
+        program = writeBinary(context, filename, buildOptions);
     } else {
         // Compare modified dates of binary file and source file
         std::string cacheFilename = filename + ".cache";
@@ -204,7 +204,7 @@ cl::Program buildProgramFromBinary(cl::Context context, std::string filename) {
 
         if(outOfDate || wrongDeviceID) {
             std::cout << "Binary is out of date. Compiling..." << std::endl;
-            program = writeBinary(context, filename);
+            program = writeBinary(context, filename, buildOptions);
         } else {
             std::cout << "Binary is not out of date. " << std::endl;
             program = readBinary(context, binaryFilename);
@@ -214,7 +214,7 @@ cl::Program buildProgramFromBinary(cl::Context context, std::string filename) {
     return program;
 }
 
-cl::Program buildProgramFromSource(cl::Context context, std::string filename) {
+cl::Program buildProgramFromSource(cl::Context context, std::string filename, std::string buildOptions) {
         // Read source file
         std::ifstream sourceFile(filename.c_str());
         if(sourceFile.fail()) 
@@ -231,11 +231,11 @@ cl::Program buildProgramFromSource(cl::Context context, std::string filename) {
     
         // Build program for these specific devices
         try{
-            program.build(devices);
+            program.build(devices, buildOptions.c_str());
         } catch(cl::Error error) {
             if(error.err() == CL_BUILD_PROGRAM_FAILURE) {
                 std::cout << "Build log:" << std::endl << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(devices[0]) << std::endl;
-            }   
+            }
             throw error;
         } 
         return program;

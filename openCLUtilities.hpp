@@ -30,9 +30,9 @@ cl::Context createCLContext(cl_device_type type = CL_DEVICE_TYPE_ALL, cl_vendor 
 
 cl::Platform getPlatform(cl_device_type = CL_DEVICE_TYPE_ALL, cl_vendor vendor = VENDOR_ANY); 
 
-cl::Program buildProgramFromSource(cl::Context context, std::string filename);
+cl::Program buildProgramFromSource(cl::Context context, std::string filename, std::string buildOptions = "");
 
-cl::Program buildProgramFromBinary(cl::Context context, std::string filename);
+cl::Program buildProgramFromBinary(cl::Context context, std::string filename, std::string buildOptions = "");
 
 char *getCLErrorString(cl_int err);
 
