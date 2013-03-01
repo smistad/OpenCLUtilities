@@ -8,7 +8,7 @@
 
 cl::Platform getPlatform(cl_device_type type, cl_vendor vendor) {
     // Get available platforms
-    cl::vector<cl::Platform> platforms;
+    VECTOR_CLASS<cl::Platform> platforms;
     cl::Platform::get(&platforms);
 
     if(platforms.size() == 0)
@@ -34,7 +34,7 @@ cl::Platform getPlatform(cl_device_type type, cl_vendor vendor) {
         for(unsigned int i = 0; i < platforms.size(); i++) {
             if(platforms[i].getInfo<CL_PLATFORM_VENDOR>().find(find) != std::string::npos) {
                 try {
-                    cl::vector<cl::Device> devices;
+                    VECTOR_CLASS<cl::Device> devices;
                     platforms[i].getDevices(type, &devices);
                     platformID = i;
                     break;
@@ -46,7 +46,7 @@ cl::Platform getPlatform(cl_device_type type, cl_vendor vendor) {
     } else {
         for(unsigned int i = 0; i < platforms.size(); i++) {
             try {
-                cl::vector<cl::Device> devices;
+                VECTOR_CLASS<cl::Device> devices;
                 platforms[i].getDevices(type, &devices);
                 platformID = i;
                 break;
@@ -115,10 +115,10 @@ cl::Program writeBinary(cl::Context context, std::string filename, std::string b
     // Build program from source file and store the binary file
     cl::Program program = buildProgramFromSource(context, filename, buildOptions);
 
-    cl::vector<std::size_t> binarySizes;
+    VECTOR_CLASS<std::size_t> binarySizes;
     binarySizes = program.getInfo<CL_PROGRAM_BINARY_SIZES>();
 
-    cl::vector<char *> binaries;
+    VECTOR_CLASS<char *> binaries;
     binaries = program.getInfo<CL_PROGRAM_BINARIES>();
 
     std::string binaryFilename = filename + ".bin";
@@ -138,7 +138,7 @@ cl::Program writeBinary(cl::Context context, std::string filename, std::string b
     stat(filename.c_str(), &attrib);
     timeStr = ctime(&(attrib.st_mtime));
     #endif
-    cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+    VECTOR_CLASS<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
     timeStr += "-" + devices[0].getInfo<CL_DEVICE_NAME>();
     fwrite(timeStr.c_str(), sizeof(char), timeStr.size(), cacheFile);
     fclose(cacheFile);
@@ -153,7 +153,7 @@ cl::Program readBinary(cl::Context context, std::string filename) {
         (std::istreambuf_iterator<char>()));
     cl::Program::Binaries binary(1, std::make_pair(sourceCode.c_str(), sourceCode.length()));
 
-    cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+    VECTOR_CLASS<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
     if(devices.size() > 1) {
         // Currently only support compiling for one device
         cl::Device device = devices[0];
@@ -198,7 +198,7 @@ cl::Program buildProgramFromBinary(cl::Context context, std::string filename, st
             outOfDate = strcmp(ctime(&(attrib.st_mtime)), cache.substr(0, pos).c_str()) != 0;
             #endif
 
-            cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+            VECTOR_CLASS<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
             wrongDeviceID = cache.substr(pos+1) != devices[0].getInfo<CL_DEVICE_NAME>();
         }
 
@@ -227,7 +227,7 @@ cl::Program buildProgramFromSource(cl::Context context, std::string filename, st
         // Make program of the source code in the context
         cl::Program program = cl::Program(context, source);
 
-        cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+        VECTOR_CLASS<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
     
         // Build program for these specific devices
         try{

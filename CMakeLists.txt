@@ -14,6 +14,8 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(OpenCL REQUIRED)
 
+find_package(OpenGL REQUIRED)
+
 #------------------------------------------------------------------------------
 # Where to look for includes and libraries
 #------------------------------------------------------------------------------
@@ -29,6 +31,10 @@ set(OCL-Utilities_LINK_LIBRARIES ${OPENCL_LIBRARIES})
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     set(OCL-Utilities_LINK_LIBRARIES ${OCL-Utilities_LINK_LIBRARIES} GL)
 endif()
+
+#if("${CMAKE_SYSTEM}" MATCHES "Apple")
+    set(OCL-Utilities_LINK_LIBRARIES ${OCL-Utilities_LINK_LIBRARIES} ${OPENGL_LIBRARIES})
+#endif()
 
 add_library (OCL-Utilities openCLUtilities.hpp openCLUtilities.cpp openCLGLUtilities.hpp openCLGLUtilities.cpp )
 target_link_libraries(OCL-Utilities ${OCL-Utilities_LINK_LIBRARIES})
