@@ -14,6 +14,10 @@ IF (WIN32)
     FIND_LIBRARY(OPENCL_LIBRARIES OpenCL "C:/Program Files (x86)/AMD APP/lib/x86")
 
 ELSE (WIN32)
+IF(APPLE)
+        FIND_LIBRARY(OPENCL_LIBRARIES OpenCL DOC "OpenCL lib for OSX")
+        FIND_PATH(OPENCL_INCLUDE_DIR OpenCL/cl.h DOC "Include for OpenCL on OSX")
+ELSE(APPLE)
 
     # Unix style platforms
 
@@ -24,7 +28,7 @@ ELSE (WIN32)
     # Assuming 64 bit here
     FIND_LIBRARY(OPENCL_LIBRARIES OpenCL $ENV{AMDAPPSDKROOT}/lib/x86_64)
     message("opencl_libraries: ${OPENCL_LIBRARIES}")
-
+ENDIF(APPLE)
 ENDIF (WIN32)
 
 SET( OPENCL_FOUND "NO" )
