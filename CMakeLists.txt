@@ -11,21 +11,8 @@ cmake_minimum_required(VERSION 2.8)
 
 # OpenCL
 ###########
-# Tell Cmake where the FindOpenCL.cmake file is
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
 find_package( OpenCL REQUIRED)
-#INCLUDE_DIRECTORIES( ${OPENCL_INCLUDE_DIRS} )
-
-SET(OPENCL_HEADERS
-	OpenCL/cl.hpp
-)
-
-add_library (OpenCL
-	${OPENCL_HEADERS}
-)
-
-set_target_properties( OpenCL PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries( OpenCL ${OPENCL_LIBRARIES} )
 
 # OpenGL
 ###########
@@ -52,7 +39,7 @@ endif()
     set(OCL-Utilities_LINK_LIBRARIES ${OCL-Utilities_LINK_LIBRARIES} ${OPENGL_LIBRARIES})
 #endif()
 
-add_library (OCL-Utilities openCLUtilities.hpp openCLUtilities.cpp openCLGLUtilities.hpp openCLGLUtilities.cpp )
+add_library (OCL-Utilities OpenCL/cl.hpp openCLUtilities.hpp openCLUtilities.cpp openCLGLUtilities.hpp openCLGLUtilities.cpp )
 target_link_libraries(OCL-Utilities ${OCL-Utilities_LINK_LIBRARIES})
 
 #------------------------------------------------------------------------------
