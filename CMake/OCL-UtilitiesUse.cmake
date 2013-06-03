@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 
 # OpenCL
-set(CMAKE_MODULE_PATH ${OCL-Utilities_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${OCL-Utilities_SOURCE_DIR})
 find_package(OpenCL REQUIRED)
 
 #------------------------------------------------------------------------------
