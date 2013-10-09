@@ -29,7 +29,7 @@ typedef struct OpenCL {
     cl::CommandQueue queue;
     cl::Program program;
     cl::Device device;
-    cl::Device platform;
+    cl::Platform platform;
 } OpenCL;
 
 cl::Context createCLContextFromArguments(int argc, char ** argv);
