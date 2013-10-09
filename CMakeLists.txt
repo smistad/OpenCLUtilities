@@ -39,7 +39,7 @@ endif()
     set(OCL-Utilities_LINK_LIBRARIES ${OCL-Utilities_LINK_LIBRARIES} ${OPENGL_LIBRARIES})
 #endif()
 
-add_library (OCL-Utilities OpenCL/cl.hpp openCLUtilities.hpp openCLUtilities.cpp openCLGLUtilities.hpp openCLGLUtilities.cpp )
+add_library (OCL-Utilities OpenCL/cl.hpp openCLUtilities.hpp openCLUtilities.cpp openCLGLUtilities.hpp openCLGLUtilities.cpp histogram-pyramids.hpp histogram-pyramids.cpp)
 target_link_libraries(OCL-Utilities ${OCL-Utilities_LINK_LIBRARIES})
 
 #------------------------------------------------------------------------------
