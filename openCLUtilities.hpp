@@ -24,6 +24,13 @@ enum cl_vendor {
     VENDOR_INTEL
 };
 
+typedef struct OpenCL {
+    cl::Context context;
+    cl::CommandQueue queue;
+    cl::Program program;
+    cl::Device device;
+} OpenCL;
+
 cl::Context createCLContextFromArguments(int argc, char ** argv);
 
 cl::Context createCLContext(cl_device_type type = CL_DEVICE_TYPE_ALL, cl_vendor vendor = VENDOR_ANY);
