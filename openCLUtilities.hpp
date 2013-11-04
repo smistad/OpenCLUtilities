@@ -15,6 +15,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <set>
 
 
 enum cl_vendor {
@@ -24,12 +25,22 @@ enum cl_vendor {
     VENDOR_INTEL
 };
 
+class GarbageCollector {
+    public:
+        void addMemObject(cl::Memory * mem);
+        void deleteMemObject(cl::Memory * mem);
+        void deleteAllMemObjects();
+        ~GarbageCollector();
+    private:
+        std::set<cl::Memory *> memObjects;
+};
 typedef struct OpenCL {
     cl::Context context;
     cl::CommandQueue queue;
     cl::Program program;
     cl::Device device;
     cl::Platform platform;
+    GarbageCollector GC;
 } OpenCL;
 
 cl::Context createCLContextFromArguments(int argc, char ** argv);
