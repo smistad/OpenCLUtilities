@@ -293,3 +293,26 @@ char *getCLErrorString(cl_int err) {
         default:                                  return (char *) "Unknown";
     }
 }
+
+void GarbageCollector::addMemObject(cl::Memory* mem) {
+    memObjects.insert(mem);
+}
+
+void GarbageCollector::deleteMemObject(cl::Memory* mem) {
+    memObjects.erase(mem);
+    delete mem;
+    mem = NULL;
+}
+
+void GarbageCollector::deleteAllMemObjects() {
+    std::set<cl::Memory *>::iterator it;
+    for(it = memObjects.begin(); it != memObjects.end(); it++) {
+        cl::Memory * mem = *it;
+        delete (mem);
+        mem = NULL;
+    }
+    memObjects.clear();
+}
+
+GarbageCollector::~GarbageCollector() {
+}
