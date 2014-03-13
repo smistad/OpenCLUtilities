@@ -242,7 +242,7 @@ void HistogramPyramid2D::create(Image2D &baseLevel, int sizeX, int sizeY) {
         int i = 1;
         while(pow(2.0, i) < largestSize)
             i++;
-        size = pow(2.0, i);
+        size = static_cast< int >( pow( 2.0, i ) );
     }
     std::cout << "2D HP size: " << size << std::endl;
 
@@ -324,7 +324,7 @@ void HistogramPyramid2D::traverse(Kernel &kernel, int arguments) {
         cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
-            l = HPlevels.size()-1;
+            l = static_cast< cl_uint >( HPlevels.size() - 1 );
         kernel.setArg(i+arguments, HPlevels[l]);
     }
 
@@ -339,7 +339,7 @@ void HistogramPyramid3D::traverse(Kernel &kernel, int arguments) {
         cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
-            l = HPlevels.size()-1;
+            l = static_cast< cl_uint >( HPlevels.size() - 1 );
         kernel.setArg(i+arguments+2, HPlevels[l]);
     }
 
@@ -354,7 +354,7 @@ void HistogramPyramid3DBuffer::traverse(Kernel &kernel, int arguments) {
         cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
-            l = HPlevels.size()-1;
+            l = static_cast< cl_uint >( HPlevels.size() - 1 );
         kernel.setArg(i+arguments+2, HPlevels[l]);
     }
 
