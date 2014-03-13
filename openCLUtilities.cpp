@@ -188,7 +188,7 @@ cl::Program buildProgramFromBinary(cl::Context context, std::string filename, st
 
         bool outOfDate = true;
         bool wrongDeviceID = true;
-        int pos = cache.find("-");
+        const size_t pos = cache.find("-");
         if(pos > -1) {
             #ifdef WIN32
             std::cout << "reading file modified date on windows not implemented yet" << std::endl;

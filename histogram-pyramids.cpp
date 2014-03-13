@@ -1,5 +1,6 @@
 #include "histogram-pyramids.hpp"
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 using namespace cl;
 
@@ -319,8 +320,8 @@ void HistogramPyramid2D::create(Image2D &baseLevel, int sizeX, int sizeY) {
 }
 
 void HistogramPyramid2D::traverse(Kernel &kernel, int arguments) {
-    for(int i = 0; i < 14; i++) {
-        int l = i;
+    for (cl_uint i = 0; i < 14; i++) {
+        cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
             l = HPlevels.size()-1;
@@ -334,8 +335,8 @@ void HistogramPyramid2D::traverse(Kernel &kernel, int arguments) {
 void HistogramPyramid3D::traverse(Kernel &kernel, int arguments) {
     kernel.setArg(arguments, this->size);
     kernel.setArg(arguments+1, this->sum);
-    for(int i = 0; i < 10; i++) {
-        int l = i;
+    for (cl_uint i = 0; i < 10; i++) {
+        cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
             l = HPlevels.size()-1;
@@ -349,8 +350,8 @@ void HistogramPyramid3D::traverse(Kernel &kernel, int arguments) {
 void HistogramPyramid3DBuffer::traverse(Kernel &kernel, int arguments) {
     kernel.setArg(arguments, this->size);
     kernel.setArg(arguments+1, this->sum);
-    for(int i = 0; i < 10; i++) {
-        int l = i;
+    for(cl_uint i = 0; i < 10; i++) {
+        cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
             l = HPlevels.size()-1;
