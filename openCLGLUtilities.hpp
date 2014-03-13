@@ -21,7 +21,7 @@
 #endif
 
 cl::Context createCLGLContext(cl_device_type type = CL_DEVICE_TYPE_ALL, cl_vendor vendor = VENDOR_ANY);
-#if not (defined(__APPLE__) || !defined(__MACOSX))
+#if !(defined(__APPLE__) || !defined(__MACOSX))
 cl::Device getValidGLCLInteropDevice(cl::Platform platform, cl_context_properties* properties);
 #endif
 
