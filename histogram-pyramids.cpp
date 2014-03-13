@@ -1,5 +1,6 @@
 #include "histogram-pyramids.hpp"
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 using namespace cl;
 
@@ -31,7 +32,7 @@ void HistogramPyramid3D::create(Image3D &baseLevel, int sizeX, int sizeY, int si
         int i = 1;
         while(pow(2.0, i) < largestSize)
             i++;
-        size = pow(2.0, i);
+        size = static_cast< int >( pow(2.0, i) );
     }
     std::cout << "3D HP size: " << size << std::endl;
 
@@ -123,7 +124,7 @@ void HistogramPyramid3DBuffer::create(Buffer &baseLevel, int sizeX, int sizeY, i
         int i = 1;
         while(pow(2.0, i) < largestSize)
             i++;
-        size = pow(2.0, i);
+        size = static_cast< int >( pow( 2.0, i ) );
     }
     std::cout << "3D HP size: " << size << std::endl;
 
@@ -241,7 +242,7 @@ void HistogramPyramid2D::create(Image2D &baseLevel, int sizeX, int sizeY) {
         int i = 1;
         while(pow(2.0, i) < largestSize)
             i++;
-        size = pow(2.0, i);
+        size = static_cast< int >( pow( 2.0, i ) );
     }
     std::cout << "2D HP size: " << size << std::endl;
 
@@ -319,11 +320,11 @@ void HistogramPyramid2D::create(Image2D &baseLevel, int sizeX, int sizeY) {
 }
 
 void HistogramPyramid2D::traverse(Kernel &kernel, int arguments) {
-    for(int i = 0; i < 14; i++) {
-        int l = i;
+    for (cl_uint i = 0; i < 14; i++) {
+        cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
-            l = HPlevels.size()-1;
+            l = static_cast< cl_uint >( HPlevels.size() - 1 );
         kernel.setArg(i+arguments, HPlevels[l]);
     }
 
@@ -334,11 +335,11 @@ void HistogramPyramid2D::traverse(Kernel &kernel, int arguments) {
 void HistogramPyramid3D::traverse(Kernel &kernel, int arguments) {
     kernel.setArg(arguments, this->size);
     kernel.setArg(arguments+1, this->sum);
-    for(int i = 0; i < 10; i++) {
-        int l = i;
+    for (cl_uint i = 0; i < 10; i++) {
+        cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
-            l = HPlevels.size()-1;
+            l = static_cast< cl_uint >( HPlevels.size() - 1 );
         kernel.setArg(i+arguments+2, HPlevels[l]);
     }
 
@@ -349,11 +350,11 @@ void HistogramPyramid3D::traverse(Kernel &kernel, int arguments) {
 void HistogramPyramid3DBuffer::traverse(Kernel &kernel, int arguments) {
     kernel.setArg(arguments, this->size);
     kernel.setArg(arguments+1, this->sum);
-    for(int i = 0; i < 10; i++) {
-        int l = i;
+    for(cl_uint i = 0; i < 10; i++) {
+        cl_uint l = i;
         if(i >= HPlevels.size())
             // if not using all levels, just add the last levels as dummy arguments
-            l = HPlevels.size()-1;
+            l = static_cast< cl_uint >( HPlevels.size() - 1 );
         kernel.setArg(i+arguments+2, HPlevels[l]);
     }
 

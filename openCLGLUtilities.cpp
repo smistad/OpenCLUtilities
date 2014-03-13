@@ -50,7 +50,7 @@ cl::Context createCLGLContext(cl_device_type type, cl_vendor vendor) {
 
 		// If more than one CL device find out which one is associated with GL context
 		if(devices.size() > 1) {
-#if not (defined(__APPLE__) || !defined(__MACOSX))
+#if !(defined(__APPLE__) || !defined(__MACOSX))
 			cl::Device interopDevice = getValidGLCLInteropDevice(platform, cps);
 			singleDevice.push_back(interopDevice);
 			context = cl::Context(singleDevice, cps);
@@ -67,7 +67,7 @@ cl::Context createCLGLContext(cl_device_type type, cl_vendor vendor) {
     }
 }
 
-#if not (defined(__APPLE__) || defined(__MACOSX))
+#if !(defined(__APPLE__) || defined(__MACOSX))
 cl::Device getValidGLCLInteropDevice(cl::Platform platform, cl_context_properties* properties) {
     // Function for finding a valid device for CL-GL context. 
     // Thanks to Jim Vaughn for this contribution
