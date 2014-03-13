@@ -32,7 +32,7 @@ void HistogramPyramid3D::create(Image3D &baseLevel, int sizeX, int sizeY, int si
         int i = 1;
         while(pow(2.0, i) < largestSize)
             i++;
-        size = pow(2.0, i);
+        size = static_cast< int >( pow(2.0, i) );
     }
     std::cout << "3D HP size: " << size << std::endl;
 
@@ -124,7 +124,7 @@ void HistogramPyramid3DBuffer::create(Buffer &baseLevel, int sizeX, int sizeY, i
         int i = 1;
         while(pow(2.0, i) < largestSize)
             i++;
-        size = pow(2.0, i);
+        size = static_cast< int >( pow( 2.0, i ) );
     }
     std::cout << "3D HP size: " << size << std::endl;
 
