@@ -55,4 +55,9 @@ cl::Program buildProgramFromBinary(cl::Context context, std::string filename, st
 
 char *getCLErrorString(cl_int err);
 
+// Print info about available OpenCL-platforms.
+// @thanks http://smlnj-gforge.cs.uchicago.edu/scm/viewvc.php/trunk/opencl/src/tests/print-info/print-cl-info.c?view=markup&root=sml3d&pathrev=644
+void printCLPlatform();
+void printCLPlatform( cl_platform_id );
+
 #endif
